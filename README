@@ -1,0 +1,4 @@
+Simple template is a HTML templating system implemented in Java. Simple template can be used on the server side (ex: in a servlet on AppEngine), or the client side with GWT. The base conception of simple template is programming logic-free plain HTML templating. 
+
+Look at the project page on:
+http://thebojda.github.com/simple-template/
