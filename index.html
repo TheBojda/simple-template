@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Simple-template by TheBojda</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Simple-template</h1>
+        <p></p>
+
+        <p class="view"><a href="https://github.com/TheBojda/simple-template">View the Project on GitHub <small>TheBojda/simple-template</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/TheBojda/simple-template/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/TheBojda/simple-template/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/TheBojda/simple-template">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h3>Simple template</h3>
+
+<p>Simple template is a HTML templating system implemented in Java. Simple template can be used on the server side (ex: in a servlet on AppEngine), or the client side with GWT. The base conception of simple template is programming logic-free plain HTML templating. </p>
+
+<h3>How simple template is working?</h3>
+
+<p>Simple template templates are plain HTML documents, where sections are defined with HTML comments (<code>&lt;!--{section name}--&gt;...&lt;!--{/section}--&gt;</code>) or simply with the <code>{name}</code> form (it is equal to <code>&lt;!--{section name}--&gt;&lt;!--{/section}--&gt;</code>). A template is something like this:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;title&gt;</span>Test<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;ul&gt;</span>
+            <span class="c">&lt;!--{section container}--&gt;</span>
+                <span class="c">&lt;!--{section odd}--&gt;</span>
+                <span class="nt">&lt;li&gt;&lt;i&gt;</span>{item}<span class="nt">&lt;/i&gt;&lt;/li&gt;</span>
+                <span class="c">&lt;!--{/section}--&gt;</span>
+                <span class="c">&lt;!--{section even}--&gt;</span>
+                <span class="nt">&lt;li&gt;&lt;b&gt;</span>{item}<span class="nt">&lt;/b&gt;&lt;/li&gt;</span>
+                <span class="c">&lt;!--{/section}--&gt;</span>
+            <span class="c">&lt;!--{/section}--&gt;</span>
+        <span class="nt">&lt;/ul&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<p>This sections are reusable parts of the template, and empty slots for the data. The first step of using templates are parsing them:</p>
+
+<div class="highlight"><pre><span class="n">Template</span> <span class="n">t</span> <span class="o">=</span> <span class="n">Template</span><span class="o">.</span><span class="na">parse</span><span class="o">(...</span> <span class="n">template</span> <span class="n">string</span> <span class="o">...);</span>
+</pre></div>
+
+<p>Every section is accessible by name, and can be used as a new template.</p>
+
+<div class="highlight"><pre><span class="n">Template</span> <span class="n">container</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"container"</span><span class="o">);</span>
+<span class="n">Template</span> <span class="n">odd</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"odd"</span><span class="o">);</span>
+<span class="n">Template</span> <span class="n">even</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"even"</span><span class="o">);</span>
+</pre></div>
+
+<p>These <code>Template</code> objects are reusable structures for generating content. The content generation is done by the template renderer, which is accessible by the <code>getRenderer()</code> method.</p>
+
+<div class="highlight"><pre><span class="n">TemplateRenderer</span> <span class="n">tr</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="na">getRender</span><span class="o">();</span>
+</pre></div>
+
+<p>The <code>TemplateRenderer</code> objects <code>.set()</code> method is used to fill the template.</p>
+
+<div class="highlight"><pre><span class="n">odd</span><span class="o">.</span><span class="na">getRender</span><span class="o">().</span><span class="na">set</span><span class="o">(</span><span class="s">"item"</span><span class="o">,</span> <span class="s">"item"</span> <span class="o">+</span> <span class="n">i</span><span class="o">)</span>
+</pre></div>
+
+<p>This code will generate something like this:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;li&gt;&lt;i&gt;</span>item0<span class="nt">&lt;/i&gt;&lt;/li&gt;</span>
+</pre></div>
+
+<p>It is possible to fill the slot with sequence of strings by the <code>addTo()</code> method:</p>
+
+<div class="highlight"><pre><span class="n">tr</span><span class="o">.</span><span class="na">addTo</span><span class="o">(</span><span class="s">"container"</span><span class="o">,</span><span class="s">"test1"</span><span class="o">);</span>
+<span class="n">tr</span><span class="o">.</span><span class="na">addTo</span><span class="o">(</span><span class="s">"container"</span><span class="o">,</span><span class="s">"test2"</span><span class="o">);</span>
+</pre></div>
+
+<p>This code will generate something like this:</p>
+
+<div class="highlight"><pre>...
+<span class="nt">&lt;ul&gt;</span>
+test1
+test2
+<span class="nt">&lt;/ul&gt;</span>
+...
+</pre></div>
+
+<p>If the renderer is filled, the content can be generated by the <code>render()</code> method. Look at a full example by using simple template:</p>
+
+<div class="highlight"><pre><span class="n">Template</span> <span class="n">t</span> <span class="o">=</span> <span class="n">Template</span><span class="o">.</span><span class="na">parse</span><span class="o">(...</span> <span class="n">template</span> <span class="n">source</span> <span class="o">...);</span>
+<span class="n">Template</span> <span class="n">container</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"container"</span><span class="o">);</span>
+<span class="n">Template</span> <span class="n">odd</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"odd"</span><span class="o">);</span>
+<span class="n">Template</span> <span class="n">even</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"even"</span><span class="o">);</span>
+
+<span class="n">TemplateRenderer</span> <span class="n">tr</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="na">getRender</span><span class="o">();</span>
+<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+  <span class="n">tr</span><span class="o">.</span><span class="na">addTo</span><span class="o">(</span><span class="s">"container"</span><span class="o">,</span>
+    <span class="o">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> 
+    <span class="o">?</span> 
+    <span class="n">odd</span><span class="o">.</span><span class="na">getRender</span><span class="o">().</span><span class="na">set</span><span class="o">(</span><span class="s">"item"</span><span class="o">,</span> <span class="s">"item"</span> <span class="o">+</span> <span class="n">i</span><span class="o">)</span>
+    <span class="o">:</span> 
+    <span class="n">even</span><span class="o">.</span><span class="na">getRender</span><span class="o">().</span><span class="na">set</span><span class="o">(</span><span class="s">"item"</span><span class="o">,</span> <span class="s">"item"</span> <span class="o">+</span> <span class="n">i</span><span class="o">)</span>
+    <span class="o">));</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">tr</span><span class="o">.</span><span class="na">render</span><span class="o">());</span>
+</pre></div>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/TheBojda">TheBojda</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-13010823-15");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
